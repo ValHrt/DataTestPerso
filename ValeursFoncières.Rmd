@@ -1,0 +1,112 @@
+---
+title: "ValeursFoncières"
+author: "Valentin"
+date: "2/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r appel des librairies}
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(DT)
+```
+
+```{r Recuperation des donnees}
+VF <- fread("~/Desktop/valeursfoncieres.txt")
+```
+
+```{r Suppression colonnes inutiles}
+VF$`Code service CH` <- NULL
+VF$`Reference document` <- NULL
+VF$`1 Articles CGI` <- NULL
+VF$`2 Articles CGI` <- NULL
+VF$`3 Articles CGI` <- NULL
+VF$`4 Articles CGI` <- NULL
+VF$`5 Articles CGI` <- NULL
+VF$`2eme lot` <- NULL
+VF$`Surface Carrez du 2eme lot` <- NULL
+VF$`3eme lot` <- NULL
+VF$`Surface Carrez du 3eme lot` <- NULL
+VF$`4eme lot` <- NULL
+VF$`Surface Carrez du 4eme lot` <- NULL
+VF$`5eme lot` <- NULL
+VF$`Surface Carrez du 5eme lot` <- NULL
+```
+
+```{r mise en nombre de certaines variables}
+VF$`Valeur fonciere` <- as.numeric(sub(",", ".", VF$`Valeur fonciere`))
+VF$`Surface reelle bati` <- as.numeric(VF$`Surface reelle bati`)
+VF$`Surface terrain` <- as.numeric(VF$`Surface terrain`)
+```
+
+```{r appel du jeu de donnees}
+View(VF)
+```
+
+```{r verification de la nature des variables}
+str(VF)
+```
+
+```{r mise en data frame}
+VF <- as.data.frame(VF)
+```
+
+# Test pour la commune de SURZUR
+
+```{r filtre pour la commune}
+SurzurMatrice <- filter(VF, Commune == "SURZUR")
+SurzurMatrice
+```
+
+
+```{r}
+library(tidyverse)
+```
+
+```{r création d'un jeu de donnees sans doublons}
+SurzurMatriceF1 <- SurzurMatrice %>% distinct(`Date mutation`, `Valeur fonciere`, Commune, `Code commune`, .keep_all = TRUE)
+```
+
+```{r test du jeu de donnees}
+SurzurMatriceF1
+```
+
+```{r verification absence de doublons}
+#duplicated(SurzurMatriceF1)
+```
+
+```{r appel de la fonction calcul}
+summary(SurzurMatriceF1)
+```
+
+```{r}
+SurzurLogements2 <- SurzurMatriceF1[SurzurMatriceF1$`Valeur fonciere` > 300000, ]
+```
+
+```{r test pour la valeur cible}
+SurzurLogements2
+```
+
+```{r création d'un jeu de donnees sans doublons pour VF}
+VF1 <- VF %>% distinct(`Date mutation`, `Valeur fonciere`, Commune, `Code commune`, .keep_all = TRUE)
+```
+
+```{r}
+View(VF1)
+```
+
+```{r}
+summary(VF1)
+```
+
+```{r}
+VFtest <- VF1[VF1$`Valeur fonciere` > 1000000, ]
+```
+
+
