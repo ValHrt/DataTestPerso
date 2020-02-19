@@ -1,0 +1,88 @@
+---
+title: "Test Surzur Immo"
+author: "Valentin"
+date: "2/19/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(sf)
+library(tmap)
+library(tmaptools)
+library(leaflet)
+```
+
+```{r}
+SurzurData <- read_excel("~/Desktop/ProjectR/ImmoTest.xlsx", 
+    col_types = c("text", "text", "text", 
+        "numeric", "numeric", "numeric", 
+        "text", "numeric", "numeric", 
+        "numeric", "numeric", "text", "text", 
+        "text"), skip = 1)
+```
+
+```{r}
+Sys.Date()
+```
+
+```{r}
+format(Sys.Date(), format="%d %B %Y")
+```
+
+```{r}
+SurzurData$Date <- as.Date(SurzurData$Date)
+```
+
+```{r}
+SurzurData$Taux_de_commission <- SurzurData$Taux_de_commission*100
+```
+
+```{r}
+SurzurData <- as.data.frame(SurzurData)
+```
+
+```{r}
+SurzurData
+```
+
+```{r}
+sum(SurzurData$Type=="ResidencePrincipale", na.rm=TRUE)
+```
+
+```{r}
+sum(SurzurData$Type=="ResidenceSecondaire", na.rm=TRUE)
+```
+
+```{r}
+sum(SurzurData$Type=="Investissement", na.rm=TRUE)
+```
+
+```{r}
+SurzurData <- rename(SurzurData, code_insee=Provenance_acquéreur)
+SurzurData
+```
+
+
+```{r}
+FranceDepartements <- st_read("/Users/valentinhenriot/Desktop/ProjectR/departementsFR2018/departements-20180101.shp", stringsAsFactors = FALSE)
+
+datamap <- inner_join(FranceDepartements, SurzurData)
+
+tm_shape(datamap) +
+tm_polygons("Population", id = "code_insee", palette = "Blues")+ 
+
+tmap_mode("view")
+DensityMap <- tmap_last()
+
+
+tmap_save(DensityMap, "FranceDepartements.html")
+```
+
