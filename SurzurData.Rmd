@@ -65,6 +65,13 @@ sum(SurzurData$Type=="ResidenceSecondaire", na.rm=TRUE)
 sum(SurzurData$Type=="Investissement", na.rm=TRUE)
 ```
 
+### À finir, essayer de trouver plus facile pour faire
+
+```{r}
+sum(SurzurData$code_insee==56, na.rm = TRUE) 
+sum(SurzurData$code_insee==92, na.rm = TRUE)
+```
+
 ```{r}
 SurzurData <- rename(SurzurData, code_insee=Provenance_acquéreur)
 SurzurData
