@@ -69,22 +69,35 @@ sum(SurzurData$Type=="Investissement", na.rm=TRUE)
 
 ```{r}
 sum(SurzurData$code_insee==56, na.rm = TRUE) 
-sum(SurzurData$code_insee==92, na.rm = TRUE)
 ```
+
+```{r}
+SurzurData$code_insee
+```
+
+### en attendant solution RocketChat
+
+```{r}
+OccurrencesDpts <- data.frame(code_insee=c(56,92,78,85,94,72,35,45,974,62,17), Acquereurs=c(27,2,1,2,1,1,6,1,1,1,1))
+OccurrencesDpts$code_insee <- as.character(OccurrencesDpts$code_insee)
+OccurrencesDpts                            
+```
+
 
 ```{r}
 SurzurData <- rename(SurzurData, code_insee=Provenance_acquéreur)
 SurzurData
 ```
 
+### Problème à régler
 
 ```{r}
 FranceDepartements <- st_read("/Users/valentinhenriot/Desktop/ProjectR/departementsFR2018/departements-20180101.shp", stringsAsFactors = FALSE)
 
-datamap <- inner_join(FranceDepartements, SurzurData)
+datamap <- inner_join(FranceDepartements, OccurrencesDpts)
 
 tm_shape(datamap) +
-tm_polygons("Population", id = "code_insee", palette = "Blues")+ 
+tm_polygons("Acquereurs", id = "code_insee", palette = "Blues")+ 
 
 tmap_mode("view")
 DensityMap <- tmap_last()
