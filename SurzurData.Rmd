@@ -96,6 +96,15 @@ DepartementsTest <- group_by(SurzurData, code_insee, add = FALSE)
 DepartementsTest
 ```
 
+```{r}
+TestGraphique <- ggplot(SurzurData) +
+ aes(x = Date, colour = Type, weight = Prix_NV) +
+ geom_bar(fill = "#0c4c8a") +
+ scale_color_hue() +
+ labs(title = "Graphique des ventes (en fonction du type d'achat)") +
+ theme_minimal()
+```
+
 ### Problème à régler
 
 ```{r}
