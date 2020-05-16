@@ -1,0 +1,30 @@
+---
+title: "Accidents de la route caractéristiques"
+author: "Valentin Henriot"
+date: "5/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r}
+AccidentCarac <- read_csv("https://www.data.gouv.fr/fr/datasets/r/6eee0852-cbd7-447e-bd70-37c433029405")
+```
+
+```{r}
+AccidentCarac$lum <- as.factor(AccidentCarac$lum)
+AccidentCarac$agg <- as.factor(AccidentCarac$agg)
+AccidentCarac$int <- as.factor(AccidentCarac$int)
+AccidentCarac$atm <- as.factor(AccidentCarac$atm)
+AccidentCarac$col <- as.factor(AccidentCarac$col)
+```
+

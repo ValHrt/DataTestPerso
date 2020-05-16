@@ -92,7 +92,8 @@ SurzurData
 ### À AMELIORER, NE FONCTIONNE PAS POUR L'INSTANT
 
 ```{r}
-DepartementsTest <- group_by(SurzurData, code_insee, add = FALSE)
+DepartementsTest <- group_by(SurzurData, code_insee, add = FALSE) %>%
+  summarise(count = n())
 DepartementsTest
 ```
 
