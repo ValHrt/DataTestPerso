@@ -46,3 +46,54 @@ AccidentUsager <- read_csv("https://www.data.gouv.fr/fr/datasets/r/72b251e1-d5e1
 AccidentJoin <- left_join(AccidentCarac, AccidentUsager, by = "Num_Acc")
 ```
 
+```{r}
+AccidentJoin$an <- AccidentJoin$an+2000
+AccidentJoin$age <- AccidentJoin$an - AccidentJoin$an_nais
+```
+
+```{r include=FALSE}
+AccidentJoin$date <- paste(AccidentJoin$an, AccidentJoin$mois, AccidentJoin$jour, sep = "/")
+
+AccidentJoin$date <-  as.Date(AccidentJoin$date)
+```
+
+```{r}
+AccidentJoin[order(AccidentJoin$date),]
+```
+
+```{r}
+AccidentJoin$place <- as.factor(AccidentJoin$place)
+AccidentJoin$catu <- as.factor(AccidentJoin$catu)
+AccidentJoin$grav <- as.factor(AccidentJoin$grav)
+AccidentJoin$sexe <- as.factor(AccidentJoin$sexe)
+AccidentJoin$trajet <- as.factor(AccidentJoin$trajet)
+AccidentJoin$secu <- as.factor(AccidentJoin$secu)
+AccidentJoin$locp <- as.factor(AccidentJoin$locp)
+AccidentJoin$actp <- as.factor(AccidentJoin$actp)
+AccidentJoin$etatp <- as.factor(AccidentJoin$etatp)
+
+AccidentJoin$place <- recode(AccidentJoin$place, "1" = "Conducteur", "2" = "Passager avant", "6" = "Passager AVM", "7" = "Passager ARG", "8" = "Passager ARM", "9" = "Passager ARD")
+
+AccidentJoin$catu <- recode(AccidentJoin$catu, "1" = "Conducteur",
+"2" = "Passager",
+"3" = "Piéton",
+"4" = "Piéton en roller ou en trottinette")
+
+AccidentJoin$grav <- recode(AccidentJoin$grav, "1" = "Indemne", "2" = "Tué", "3" = "Grave", "4" = "Léger")
+
+AccidentJoin$sexe <- recode(AccidentJoin$sexe, "1" = "Homme", "2" = "Femme")
+
+AccidentJoin$trajet <- recode(AccidentJoin$trajet, "1" = "Domicile – travail",
+"2" = "Domicile – école",
+"3" = "Courses – achats",
+"4" = "Utilisation professionnelle",
+"5" = "Promenade – loisirs",
+"9" = "Autre")
+
+AccidentJoin$secu <- recode(AccidentJoin$secu, "11" = "Ceinture - Oui", "12" = "Ceinture - Non", "13" = "Ceinture - Non déterminable", "21" = "Casque - Oui", "22" = "Casque - Non", "23" = "Casque - Non déterminable")
+```
+
+```{r}
+AccidentJoin$Classe_Age <- cut(AccidentJoin$age, c(0, 18, 26, 41, 61, 81, 100))
+```
+
