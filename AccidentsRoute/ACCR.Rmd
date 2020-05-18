@@ -72,7 +72,7 @@ AccidentJoin$locp <- as.factor(AccidentJoin$locp)
 AccidentJoin$actp <- as.factor(AccidentJoin$actp)
 AccidentJoin$etatp <- as.factor(AccidentJoin$etatp)
 
-AccidentJoin$place <- recode(AccidentJoin$place, "1" = "Conducteur", "2" = "Passager avant", "6" = "Passager AVM", "7" = "Passager ARG", "8" = "Passager ARM", "9" = "Passager ARD")
+AccidentJoin$place <- recode(AccidentJoin$place, "1" = "Conducteur", "2" = "Passager avant", "6" = "Passager AVM", "7" = "Passager ARG", "8" = "Passager ARM", "9" = "Passager ARD", "3" = "Passager ARD", "4" = "Passager ARG", "5" = "Passager ARM")
 
 AccidentJoin$catu <- recode(AccidentJoin$catu, "1" = "Conducteur",
 "2" = "Passager",
@@ -95,5 +95,27 @@ AccidentJoin$secu <- recode(AccidentJoin$secu, "11" = "Ceinture - Oui", "12" = "
 
 ```{r}
 AccidentJoin$Classe_Age <- cut(AccidentJoin$age, c(0, 18, 26, 41, 61, 81, 100))
+```
+
+```{r}
+AccidentVehicule <- read_csv("https://www.data.gouv.fr/fr/datasets/r/b4aaeede-1a80-4d76-8f97-543dad479167")
+```
+
+```{r}
+AccidentJoin2 <- left_join(AccidentJoin, AccidentVehicule, by = "Num_Acc")
+```
+
+```{r}
+AccidentJoin2[order(AccidentJoin2$date),]
+```
+
+```{r}
+AccidentJoin2$catv <- as.factor(AccidentJoin2$catv)
+
+AccidentJoin2$catv <- recode(AccidentJoin2$catv, "01" = "Bicyclette", "02" = "Cyclomoteur<=50cm3", "03" = "Voiturette", "07" = "Voiture", "10" = "Véhicule utilitaire", "13" = "PL<7,5T", "14" = "PL>7,5T", "15" = "PL > 3,5T + remorque", "16" = "Tracteur", "17" = "Tracteur + remorque", "20" = "Engin spécial", "21" = "Tracteur agricole", "30" = "Scooter<=50cm3", "31" = "Motocyclette<=125cm3", "32" = "Scooter<=125cm3", "33" = "Moto>125cm3", "34" = "Scooter>125cm3", "35" = "Quad<=50cm3", "36" = "Quad>50cm3", "37" = "Bus", "38" = "Car", "39" = "Train", "40" = "Tramway", "99" = "Autre véhicule")
+```
+
+```{r}
+write.csv2(AccidentJoin2, file = "ACCR2018.csv")
 ```
 
