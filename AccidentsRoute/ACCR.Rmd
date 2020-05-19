@@ -116,6 +116,15 @@ AccidentJoin2$catv <- recode(AccidentJoin2$catv, "01" = "Bicyclette", "02" = "Cy
 ```
 
 ```{r}
+AccidentJoin2$long <- as.numeric(AccidentJoin2$long)
+```
+
+```{r}
+AccidentJoin2$lat <- AccidentJoin2$lat/100000
+AccidentJoin2$long <- AccidentJoin2$long/100000
+```
+
+```{r}
 write.csv2(AccidentJoin2, file = "ACCR2018.csv")
 ```
 
