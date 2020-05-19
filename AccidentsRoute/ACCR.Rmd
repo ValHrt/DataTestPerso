@@ -102,7 +102,7 @@ AccidentVehicule <- read_csv("https://www.data.gouv.fr/fr/datasets/r/b4aaeede-1a
 ```
 
 ```{r}
-AccidentJoin2 <- left_join(AccidentJoin, AccidentVehicule, by = "Num_Acc")
+AccidentJoin2 <- left_join(AccidentJoin, AccidentVehicule, by = c("Num_Acc", "num_veh"))
 ```
 
 ```{r}
