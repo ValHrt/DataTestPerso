@@ -1,0 +1,40 @@
+---
+title: "Linear regression model"
+author: "Valentin Henriot"
+date: "5/25/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+```{r cars}
+summary(mtcars)
+```
+
+```{r}
+mtcars
+```
+
+```{r}
+LinearReg <- lm(hp ~ qsec, data = mtcars)
+```
+
+```{r}
+summary(LinearReg)
+```
+
+```{r}
+plot(hp ~ qsec, data = mtcars, col=2)
+abline(LinearReg,col=3,lwd=2)
+bs <- round(coef(LinearReg), 3) 
+lmlab <- paste0("hp = ", bs[1],
+             ifelse(sign(bs[2])==1, " + ", " - "), abs(bs[2]), " qsec ")
+mtext(lmlab, 3, line=-2)
+```
