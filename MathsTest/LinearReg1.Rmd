@@ -12,6 +12,9 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```{r}
 library(dplyr)
 library(tidyr)
+library(stats)
+library(stargazer)
+library(visreg)
 ```
 
 ```{r cars}
@@ -38,3 +41,24 @@ lmlab <- paste0("hp = ", bs[1],
              ifelse(sign(bs[2])==1, " + ", " - "), abs(bs[2]), " qsec ")
 mtext(lmlab, 3, line=-2)
 ```
+
+```{r}
+MultipleLinearReg <- lm(qsec ~ hp + wt, data = mtcars)
+```
+
+```{r}
+summary(MultipleLinearReg)
+```
+
+```{r eval=FALSE, include=FALSE}
+stargazer(MultipleLinearReg, out="MultLinReg.htm")
+```
+
+```{r}
+visreg2d(MultipleLinearReg, "wt", "hp", plot.type="image")
+```
+
+```{r}
+visreg2d(MultipleLinearReg, "wt", "hp", plot.type="persp")
+```
+
