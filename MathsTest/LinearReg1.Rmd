@@ -43,6 +43,18 @@ mtext(lmlab, 3, line=-2)
 ```
 
 ```{r}
+plot(hp~ qsec, data = mtcars)
+abline(LinearReg,col=3,lwd=2) 
+segments(mtcars$qsec,fitted(LinearReg), mtcars$qsec, mtcars$hp)
+pred.frame<-data.frame(qsec=14:24) 
+pc<-predict(LinearReg, interval="confidence", newdata=pred.frame)
+pp<-predict(LinearReg, interval="prediction", newdata=pred.frame)
+matlines(pred.frame, pc[,2:3], lty=c(2,2), col="blue") 
+matlines(pred.frame, pp[,2:3], lty=c(3,3), col="red")
+legend("topright",c("confiance","prediction"),lty=c(2,3) , col=c("blue","red"))
+```
+
+```{r}
 MultipleLinearReg <- lm(qsec ~ hp + wt, data = mtcars)
 ```
 
