@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
 ```{r appel des librairies}
@@ -15,10 +15,11 @@ library(dplyr)
 library(tidyr)
 library(readr)
 library(DT)
+library(tidyverse)
 ```
 
 ```{r Recuperation des donnees}
-VF <- fread("~/Desktop/valeursfoncieres.txt")
+VF <- fread("https://www.data.gouv.fr/fr/datasets/r/3004168d-bec4-44d9-a781-ef16f41856a2")
 ```
 
 ```{r Suppression colonnes inutiles}
@@ -60,53 +61,26 @@ VF <- as.data.frame(VF)
 # Test pour la commune de SURZUR
 
 ```{r filtre pour la commune}
-SurzurMatrice <- filter(VF, Commune == "SURZUR")
-SurzurMatrice
-```
-
-
-```{r}
-library(tidyverse)
+SurzurData <- filter(VF, Commune == "SURZUR")
 ```
 
 ```{r création d'un jeu de donnees sans doublons}
-SurzurMatriceF1 <- SurzurMatrice %>% distinct(`Date mutation`, `Valeur fonciere`, Commune, `Code commune`, .keep_all = TRUE)
-```
-
-```{r test du jeu de donnees}
-SurzurMatriceF1
+SurzurData1 <- SurzurData %>% distinct(`Date mutation`, `Valeur fonciere`, Commune, `Code commune`, .keep_all = TRUE)
 ```
 
 ```{r verification absence de doublons}
-#duplicated(SurzurMatriceF1)
+#duplicated(SurzurData1)
 ```
 
 ```{r appel de la fonction calcul}
-summary(SurzurMatriceF1)
+summary(SurzurData1$`Valeur fonciere`)
+summary(SurzurData1$`Surface terrain`)
 ```
 
-```{r}
-SurzurLogements2 <- SurzurMatriceF1[SurzurMatriceF1$`Valeur fonciere` > 300000, ]
-```
-
-```{r test pour la valeur cible}
-SurzurLogements2
-```
 
 ```{r création d'un jeu de donnees sans doublons pour VF}
 VF1 <- VF %>% distinct(`Date mutation`, `Valeur fonciere`, Commune, `Code commune`, .keep_all = TRUE)
 ```
 
-```{r}
-View(VF1)
-```
-
-```{r}
-summary(VF1)
-```
-
-```{r}
-VFtest <- VF1[VF1$`Valeur fonciere` > 1000000, ]
-```
 
 

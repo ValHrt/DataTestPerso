@@ -1,0 +1,36 @@
+---
+title: "Manipulation matrices / vecteurs"
+author: "Valentin Henriot"
+date: "6/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+```{r}
+library(tidyr)
+library(dplyr)
+```
+
+```{r}
+Matrice1 <- matrix(c(1,2,3, 11,12,13), nrow = 2, ncol=3, byrow=FALSE)
+```
+
+```{r}
+Matrice1[,1]
+```
+
+```{r}
+Df1 <- data.frame(taille=c(185,178,165,171,172,NA),poids=c(82,81,55,65,68,NA),QI=c(110,108,125,99,124,NA),sexe=c("M","M","F","F","F","M"),row.names=c("Paul","Matthieu","Camille","Mireille","Capucine", "Jean"))
+```
+
+```{r}
+sum(!is.na(Df1$taille))
+```
+
+```{r}
+Df1[-1]
+```
+
