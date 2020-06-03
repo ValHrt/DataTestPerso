@@ -80,6 +80,12 @@ summary(SurzurData1$`Surface terrain`)
 
 ```{r création d'un jeu de donnees sans doublons pour VF}
 VF1 <- VF %>% distinct(`Date mutation`, `Valeur fonciere`, Commune, `Code commune`, .keep_all = TRUE)
+VF2 <- filter(VF1, `Valeur fonciere` > 0)
+```
+
+```{r}
+summary(VF1$`Valeur fonciere`)
+summary(VF1$`Surface terrain`)
 ```
 
 
