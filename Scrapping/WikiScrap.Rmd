@@ -1,0 +1,92 @@
+---
+title: "Test scrapping"
+author: "Valentin Henriot"
+date: "6/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+```{r}
+library(stringr)
+library(rvest)
+library(htmltab)
+library(tidyverse)
+library(rlist)
+library(stringi)
+library(WikipediR)
+library(ggplot2)
+```
+
+# Test avec le package rvest
+
+```{r}
+url = "https://fr.wikipedia.org/wiki/Parc_automobile_français"
+```
+
+```{r}
+sample = url %>%
+  read_html() %>%
+  html_node(xpath = '//*[@id="mw-content-text"]/div/table[1]') %>%
+  html_table(fill = TRUE)
+```
+
+```{r}
+print(paste('Les données du parc auto français contiennent', nrow(sample), 'lignes et', ncol(sample), 'colonnes'))
+```
+
+```{r}
+sample2 = url %>%
+  read_html() %>%
+  html_node(xpath = '//*[@id="mw-content-text"]/div/table[2]') %>%
+  html_table(fill = TRUE)
+```
+
+```{r}
+sample3 = url %>%
+  read_html() %>%
+  html_node(xpath = '//*[@id="mw-content-text"]/div/table[3]') %>%
+  html_table(fill = TRUE)
+```
+
+# Test avec le package WikipediR
+
+```{r}
+pages_sexualite= pages_in_category("fr",
+                                      "wikipedia",
+                                      categories="Sexualité humaine", 
+                                      clean_response=TRUE)
+print(data.frame(pages_sexualite$title))
+```
+
+```{r}
+data=data.frame(title=pages_sexualite$title,
+                longueur_pages=rep(NA,nrow(pages_sexualite)),
+                nb_pages_vers=NA,
+                nb_pages_depuis=NA,
+                stringsAsFactors=FALSE)
+for (i in 1:nrow(data)){
+  info=page_info("fr",
+                 "wikipedia",
+                 page=data$title[i])
+  data$longueur_pages[i]=info$query$pages[[1]][["length"]]
+  mybacklinks=page_backlinks("fr",
+                             "wikipedia",
+                             page=data$title[i],
+                             limit=500,
+                             clean_response=TRUE)
+    data$nb_pages_depuis[i]=length(mybacklinks)
+    mylinks=page_links("fr",
+                       "wikipedia",
+                       page=data$title[i],
+                       limit=500,
+                       clean_response=TRUE)[[1]]$links
+    data$nb_pages_vers[i]=length(mylinks)
+}
+
+data=arrange(data,desc(longueur_pages)) %>% mutate(ID=length(title):1)
+print(head(data))
+```
+
