@@ -55,6 +55,8 @@ sample3 = url %>%
 
 # Scrapping ZePerf (à mettre sur un autre doc .rmd)
 
+## À SUPPRIMER (transféré sur autre document)
+
 ```{r}
 urlzp = read_html("http://www.zeperfs.com/fiche1583-bmw-120-d.htm")
 ```
@@ -83,7 +85,11 @@ BMW120DT1 <- TestZP3 %>%
 
 BMW120DT1 <- BMW120DT1[-49,]
 BMW120DT1 <- BMW120DT1[,-2]
-  
+
+BMW120DT1 <- as.data.frame(BMW120DT1)
+```
+
+```{r}
 BMW120DT2 <- TestZP3 %>% 
   separate_rows(X2, sep = " ")
 
@@ -97,7 +103,15 @@ BMW120DT2[BMW120DT2 == "" ] <- NA ## Remplacer les cellules vides par des NA
 
 is.na(BMW120DT2) ## Test pour voir le nombre de valeurs manquantes
 
-DropNA(BMW120DT2)
+BMW120DT2 <- na.omit(BMW120DT2) ## Suppression valeurs manquantes
+
+BMW120DT2 <- as.data.frame(BMW120DT2)
+
+BMW120DT2 <- BMW120DT2[-49:-60,]
+```
+
+```{r}
+BMW120D <- cbind(BMW120DT1, BMW120DT2)
 ```
 
 # Test avec le package WikipediR
