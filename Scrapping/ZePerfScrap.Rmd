@@ -140,3 +140,13 @@ PoidsBMW120D <- PoidsBMW120D %>%
 PoidsBMW120D <- PoidsBMW120D %>% pivot_wider(names_from = Info1, values_from = Info2)
 ```
 
+# Lier tous les data frame
+
+```{r}
+BMW120D2 <- cbind(RajoutBMW120D, PoidsBMW120D)
+```
+
+```{r}
+BMW120D <- cbind(BMW120D2, BMW120D)
+```
+
