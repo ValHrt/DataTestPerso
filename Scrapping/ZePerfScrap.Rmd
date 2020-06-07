@@ -83,6 +83,60 @@ BMW120D <- cbind(BMW120DT1, BMW120DT2)
 ```{r}
 BMW120D$BMW120DT1 <- as.character(BMW120D$BMW120DT1)
 
-BMW120D$BMW120DT2 <- as.numeric(gsub(",", ".", BMW120D$BMW120DT2, fixed = TRUE))
+BMW120D$BMW120DT2 <- gsub("Ƽ", "5", BMW120D$BMW120DT2) ## Changer les Ƽ reconnus comme 'characters'
+BMW120D$BMW120DT2 <- gsub("З", "3", BMW120D$BMW120DT2) ## Idem manip précédente
+
+BMW120D$BMW120DT2 <- as.numeric(gsub("‚", ".", BMW120D$BMW120DT2, fixed = TRUE))
+```
+
+```{r}
+base::colnames(BMW120D)[colnames(BMW120D)=="BMW120DT1"] <- "Catégories"
+base::colnames(BMW120D)[colnames(BMW120D)=="BMW120DT2"] <- "Valeurs"
+
+BMW120D <- BMW120D %>% pivot_wider(names_from = Catégories, values_from = Valeurs)
+```
+
+# Manip pour récupérer le nom du véhicule
+
+```{r}
+xpath <- as.character('//*[@id="Caractéristiques"]/div[4]/div[3]/p/a')
+
+RajoutBMW120D <- urlzp %>%
+  html_node(xpath = xpath) %>%
+  html_text()
+
+RajoutBMW120D <- as.data.frame(RajoutBMW120D)
+
+RajoutBMW120D <- RajoutBMW120D %>%
+  separate(col = "RajoutBMW120D",
+           into = paste0("Info", 1:5), sep = " ") ## Séparer le df en plusieurs colonnes
+
+RajoutBMW120D$Modèle <-paste(RajoutBMW120D$Info2,RajoutBMW120D$Info3,sep=" ") ## Rassembler les colonnes pour le modèle
+RajoutBMW120D$Info2 <- NULL
+RajoutBMW120D$Info3 <- NULL
+
+RajoutBMW120D$Puissance <-paste(RajoutBMW120D$Info4,RajoutBMW120D$Info5,sep=" ") ## Rassembler les colonnes pour la puissance
+RajoutBMW120D$Info4 <- NULL
+RajoutBMW120D$Info5 <- NULL
+
+base::colnames(RajoutBMW120D)[colnames(RajoutBMW120D)=="Info1"] <- "Marque"
+```
+
+# Manip pour récupérer le poids du véhicule
+
+```{r}
+xpath2 <- as.character('//*[@id="Caractéristiques"]/div[4]/text()[21]')
+
+PoidsBMW120D <- urlzp %>%
+  html_node(xpath = xpath2) %>%
+  html_text()
+
+PoidsBMW120D <- as.data.frame(PoidsBMW120D)
+
+PoidsBMW120D <- PoidsBMW120D %>%
+  separate(col = "PoidsBMW120D",
+           into = paste0("Info", 1:2), sep = ":")
+
+PoidsBMW120D <- PoidsBMW120D %>% pivot_wider(names_from = Info1, values_from = Info2)
 ```
 
