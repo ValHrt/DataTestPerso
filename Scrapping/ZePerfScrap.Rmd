@@ -16,7 +16,6 @@ library(htmltab)
 library(tidyverse)
 library(rlist)
 library(stringi)
-library(WikipediR)
 library(ggplot2)
 library(reshape2)
 library(DataCombine)
@@ -80,3 +79,10 @@ BMW120DT2 <- BMW120DT2[-49:-60,]
 ```{r}
 BMW120D <- cbind(BMW120DT1, BMW120DT2)
 ```
+
+```{r}
+BMW120D$BMW120DT1 <- as.character(BMW120D$BMW120DT1)
+
+BMW120D$BMW120DT2 <- as.numeric(gsub(",", ".", BMW120D$BMW120DT2, fixed = TRUE))
+```
+

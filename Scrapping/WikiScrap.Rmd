@@ -53,67 +53,6 @@ sample3 = url %>%
   html_table(fill = TRUE)
 ```
 
-# Scrapping ZePerf (à mettre sur un autre doc .rmd)
-
-## À SUPPRIMER (transféré sur autre document)
-
-```{r}
-urlzp = read_html("http://www.zeperfs.com/fiche1583-bmw-120-d.htm")
-```
-
-```{r}
-TestZP <- urlzp %>%
-  html_node('table') %>%
-  html_table()
-```
-
-```{r}
-TestZP2 <- TestZP[,-3] 
-TestZP3 <- TestZP2[-2:-5,]
-```
-
-```{r}
-TestZP3$X2 <- gsub("@zeperfs.com", "", TestZP3$X2)
-TestZP3$X2 <- gsub("km/h", "", TestZP3$X2)
-TestZP3$X2 <- gsub("m.", "", TestZP3$X2)
-TestZP3$X2 <- gsub("s.", "", TestZP3$X2)
-```
-
-```{r}
-BMW120DT1 <- TestZP3 %>% 
-  separate_rows(X1, sep = ":")
-
-BMW120DT1 <- BMW120DT1[-49,]
-BMW120DT1 <- BMW120DT1[,-2]
-
-BMW120DT1 <- as.data.frame(BMW120DT1)
-```
-
-```{r}
-BMW120DT2 <- TestZP3 %>% 
-  separate_rows(X2, sep = " ")
-
-BMW120DT2 <- BMW120DT2[,-1]
-
-BMW120DT2 <- gsub(pattern = "\\s",   
-     replacement = "",
-     x = BMW120DT2) ## Pour supprimer tous les espaces
-
-BMW120DT2[BMW120DT2 == "" ] <- NA ## Remplacer les cellules vides par des NA
-
-is.na(BMW120DT2) ## Test pour voir le nombre de valeurs manquantes
-
-BMW120DT2 <- na.omit(BMW120DT2) ## Suppression valeurs manquantes
-
-BMW120DT2 <- as.data.frame(BMW120DT2)
-
-BMW120DT2 <- BMW120DT2[-49:-60,]
-```
-
-```{r}
-BMW120D <- cbind(BMW120DT1, BMW120DT2)
-```
-
 # Test avec le package WikipediR
 
 ```{r}
