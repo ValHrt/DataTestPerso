@@ -51,7 +51,7 @@ TestZP3$X2 <- gsub("s.", "", TestZP3$X2)
 BMW120DT1 <- TestZP3 %>% 
   separate_rows(X1, sep = ":") ## Séparer les données pour avoir une donnée par ligne
 
-BMW120DT1 <- BMW120DT1[-49:-50,]
+BMW120DT1 <- BMW120DT1[-51,]
 BMW120DT1 <- BMW120DT1[,-2]
 
 BMW120DT1 <- as.data.frame(BMW120DT1)
@@ -75,7 +75,7 @@ BMW120DT2 <- na.omit(BMW120DT2) ## Suppression valeurs manquantes
 
 BMW120DT2 <- as.data.frame(BMW120DT2)
 
-BMW120DT2 <- BMW120DT2[-49:-60,]
+BMW120DT2 <- BMW120DT2[-51:-56,]
 ```
 
 ```{r}
@@ -111,15 +111,16 @@ RajoutBMW120D <- as.data.frame(RajoutBMW120D)
 
 RajoutBMW120D <- RajoutBMW120D %>%
   separate(col = "RajoutBMW120D",
-           into = paste0("Info", 1:5), sep = " ") ## Séparer le df en plusieurs colonnes
+           into = paste0("Info", 1:6), sep = " ") ## Séparer le df en plusieurs colonnes
 
-RajoutBMW120D$Modèle <-paste(RajoutBMW120D$Info2,RajoutBMW120D$Info3,sep=" ") ## Rassembler les colonnes pour le modèle
+RajoutBMW120D$Modèle <-paste(RajoutBMW120D$Info2,RajoutBMW120D$Info3,RajoutBMW120D$Info4, sep=" ") ## Rassembler les colonnes pour le modèle
 RajoutBMW120D$Info2 <- NULL
 RajoutBMW120D$Info3 <- NULL
-
-RajoutBMW120D$Puissance <-paste(RajoutBMW120D$Info4,RajoutBMW120D$Info5,sep=" ") ## Rassembler les colonnes pour la puissance
 RajoutBMW120D$Info4 <- NULL
+
+RajoutBMW120D$Puissance <-paste(RajoutBMW120D$Info5,RajoutBMW120D$Info6,sep=" ") ## Rassembler les colonnes pour la puissance
 RajoutBMW120D$Info5 <- NULL
+RajoutBMW120D$Info6 <- NULL
 
 base::colnames(RajoutBMW120D)[colnames(RajoutBMW120D)=="Info1"] <- "Marque"
 ```
@@ -153,6 +154,6 @@ AudiA3 <- cbind(BMW120D2, BMW120D)
 ```
 
 ```{r}
-write.csv2(BMW120D, file = "BMW120D.csv")
+write.csv2(AudiA3, file = "AudiA3.csv")
 ```
 
