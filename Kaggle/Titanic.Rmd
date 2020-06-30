@@ -1,0 +1,98 @@
+---
+title: "Titanic Competition"
+author: "Valentin Henriot"
+date: "6/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(readr)
+```
+
+# Download and reshape data
+
+```{r}
+train.data <- read_csv("~/Desktop/ProjectR/DataBase/trainTitanic.csv")
+test.data <- read_csv("~/Desktop/ProjectR/DataBase/testTitanic.csv")
+```
+
+```{r}
+train.data$Survived <- as.logical(train.data$Survived)
+train.data$PassengerId <- as.character(train.data$PassengerId)
+train.data$Pclass <- as.factor(train.data$Pclass)
+train.data$Sex <- as.factor(train.data$Sex)
+```
+
+```{r}
+summary(train.data)
+```
+
+# Basics ratios
+
+```{r Men Survival Ratio}
+ManSurvival <- filter(train.data, Sex == "male" & Survived == TRUE)
+ManSurvivalCount <- nrow(ManSurvival)
+
+ManTotal <- filter(train.data, Sex == "male")
+ManTotalCount <- nrow(ManTotal)
+
+RatioSurvivedMan <- ManSurvivalCount/ManTotalCount
+
+print(paste("% of men who survived", RatioSurvivedMan))
+```
+
+```{r Women Survival Ratio}
+WomanSurvival <- filter(train.data, Sex == "female" & Survived == TRUE)
+WomanSurvivalCount <- nrow(WomanSurvival)
+
+WomanTotal <- filter(train.data, Sex == "female")
+WomanTotalCount <- nrow(WomanTotal)
+
+RatioSurvivedWoman <- WomanSurvivalCount/WomanTotalCount
+
+print(paste("% of women who survived", RatioSurvivedWoman))
+```
+
+```{r First class Survival Ratio}
+FirstClassSurvival <- filter(train.data, Pclass == "1" & Survived == TRUE)
+FirstClassSurvivalCount <- nrow(FirstClassSurvival)
+
+FirstClassTotal <- filter(train.data, Pclass == "1")
+FirstClassTotalCount <- nrow(FirstClassTotal)
+
+RatioSurvivedFirstClass <- FirstClassSurvivalCount/FirstClassTotalCount
+
+print(paste("% of 1st class passengers who survived", RatioSurvivedFirstClass))
+```
+
+```{r Second class Survival Ratio}
+SecondClassSurvival <- filter(train.data, Pclass == "2" & Survived == TRUE)
+SecondClassSurvivalCount <- nrow(SecondClassSurvival)
+
+SecondClassTotal <- filter(train.data, Pclass == "2")
+SecondClassTotalCount <- nrow(SecondClassTotal)
+
+RatioSurvivedSecondClass <- SecondClassSurvivalCount/SecondClassTotalCount
+
+print(paste("% of 2nd class passengers who survived", RatioSurvivedSecondClass))
+```
+
+```{r Third class Survival Ratio}
+ThirdClassSurvival <- filter(train.data, Pclass == "3" & Survived == TRUE)
+ThirdClassSurvivalCount <- nrow(ThirdClassSurvival)
+
+ThirdClassTotal <- filter(train.data, Pclass == "3")
+ThirdClassTotalCount <- nrow(ThirdClassTotal)
+
+RatioSurvivedThirdClass <- ThirdClassSurvivalCount/ThirdClassTotalCount
+
+print(paste("% of 3rd class passengers who survived", RatioSurvivedThirdClass))
+```
+
+### Regarder pour faire un arbre de décision (random forest ?)
