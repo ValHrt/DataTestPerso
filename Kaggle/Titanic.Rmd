@@ -129,4 +129,110 @@ train.data$Class.Age <- cut(train.data$Age, breaks = c(0, 5, 17, 30, 50, 81),inc
 
 ### Faire une colonne avec Mr, Miss, etc
 
+```{r}
+train.data$Title <-
+  ifelse(grepl("\\bMr\\b", train.data$Name, ignore.case = T),
+         "Mr.",
+         ifelse(
+           grepl("\\bMrs\\b", train.data$Name, ignore.case = T),
+           "Mrs.",
+           ifelse(
+             grepl("Miss.", train.data$Name, ignore.case = T),
+             "Miss.",
+             ifelse(
+               grepl("Master.", train.data$Name, ignore.case = T),
+               "Master.",
+               ifelse(
+                 grepl("Don.", train.data$Name, ignore.case = T),
+                 "Don.",
+                 ifelse(
+                   grepl("Rev.", train.data$Name, ignore.case = T),
+                   "Rev.",
+                   ifelse(
+                     grepl("Dr.", train.data$Name, ignore.case = T),
+                     "Dr.",
+                     ifelse(
+                       grepl("Mme.", train.data$Name, ignore.case = T),
+                       "Mme.",
+                       ifelse(
+                         grepl("Ms.", train.data$Name, ignore.case = T),
+                         "Ms.",
+                         ifelse(
+                           grepl("Major.", train.data$Name, ignore.case = T),
+                           "Major",
+                           ifelse(
+                             grepl("Mlle.", train.data$Name, ignore.case = T),
+                             "Mlle",
+                             ifelse(
+                               grepl("Col.", train.data$Name, ignore.case = T),
+                               "Col.",
+                               ifelse(
+                                 grepl("Capt.", train.data$Name, ignore.case = T),
+                                 "Capt.",
+                                 ifelse(
+                                   grepl("Countess.", train.data$Name, ignore.case = T),
+                                   "Countess.",
+                                   "Unknown"
+                                 )
+                               )
+                             )
+                           )
+                         )
+                       )
+                     )
+                   )
+                 )
+               )
+             )
+           )
+         ))
+```
+
+
+```{r Survival by title}
+Mr <- filter(train.data, Title == "Mr." & Survived == T) %>% nrow() / filter(train.data, Title == "Mr.") %>% nrow()
+Mr <- as.data.frame(Mr)
+
+Mrs <- filter(train.data, Title == "Mrs." & Survived == T) %>% nrow() / filter(train.data, Title == "Mrs.") %>% nrow()
+Mrs <- as.data.frame(Mrs)
+
+Miss <- filter(train.data, Title == "Miss." & Survived == T) %>% nrow() / filter(train.data, Title == "Miss.") %>% nrow()
+Miss <- as.data.frame(Miss)
+
+Master <- filter(train.data, Title == "Master." & Survived == T) %>% nrow() / filter(train.data, Title == "Master.") %>% nrow()
+Master <- as.data.frame(Master)
+
+Don <- filter(train.data, Title == "Don." & Survived == T) %>% nrow() / filter(train.data, Title == "Don.") %>% nrow()
+Don <- as.data.frame(Don)
+
+Rev <- filter(train.data, Title == "Rev." & Survived == T) %>% nrow() / filter(train.data, Title == "Rev.") %>% nrow()
+Rev <- as.data.frame(Rev)
+
+Dr <- filter(train.data, Title == "Dr." & Survived == T) %>% nrow() / filter(train.data, Title == "Dr.") %>% nrow()
+Dr <- as.data.frame(Dr)
+
+Mme <- filter(train.data, Title == "Mme." & Survived == T) %>% nrow() / filter(train.data, Title == "Mme.") %>% nrow()
+Mme <- as.data.frame(Mme)
+
+Ms <- filter(train.data, Title == "Ms." & Survived == T) %>% nrow() / filter(train.data, Title == "Ms.") %>% nrow()
+Ms <- as.data.frame(Ms)
+
+Major <- filter(train.data, Title == "Major" & Survived == T) %>% nrow() / filter(train.data, Title == "Major") %>% nrow()
+Major <- as.data.frame(Major)
+
+Mlle <- filter(train.data, Title == "Mlle" & Survived == T) %>% nrow() / filter(train.data, Title == "Mlle") %>% nrow()
+Mlle <- as.data.frame(Mlle)
+
+Col <- filter(train.data, Title == "Col." & Survived == T) %>% nrow() / filter(train.data, Title == "Col.") %>% nrow()
+Col <- as.data.frame(Col)
+
+Capt <- filter(train.data, Title == "Capt." & Survived == T) %>% nrow() / filter(train.data, Title == "Capt.") %>% nrow()
+Capt <- as.data.frame(Capt)
+
+Countess <- filter(train.data, Title == "Countess." & Survived == T) %>% nrow() / filter(train.data, Title == "Countess.") %>% nrow()
+Countess <- as.data.frame(Countess)
+
+TitleSurvival <- bind_cols(Mr, Mrs, Miss, Master, Don, Rev, Dr, Mme, Ms, Major, Mlle, Col, Capt, Countess) %>% gather(key = "Category", value = "Value")
+```
+
 ### Regarder pour faire un arbre de décision (random forest ?)
