@@ -95,4 +95,38 @@ RatioSurvivedThirdClass <- ThirdClassSurvivalCount/ThirdClassTotalCount
 print(paste("% of 3rd class passengers who survived", RatioSurvivedThirdClass))
 ```
 
+```{r}
+RatioSurvivedMan <- as.data.frame(RatioSurvivedMan)
+RatioSurvivedWoman <- as.data.frame(RatioSurvivedWoman)
+RatioSurvivedFirstClass <- as.data.frame(RatioSurvivedFirstClass)
+RatioSurvivedSecondClass <- as.data.frame(RatioSurvivedSecondClass)
+RatioSurvivedThirdClass <- as.data.frame(RatioSurvivedThirdClass)
+
+RatioSurvived <- bind_cols(RatioSurvivedMan, RatioSurvivedWoman, RatioSurvivedFirstClass, RatioSurvivedSecondClass, RatioSurvivedThirdClass) %>% gather(key = "Category", value = "Value")
+
+RatioSurvived$Category <- recode(RatioSurvived$Category, "RatioSurvivedMan" = "Man", "RatioSurvivedWoman" ="Woman", "RatioSurvivedFirstClass" = "First Class", "RatioSurvivedSecondClass" = "Second Class", "RatioSurvivedThirdClass" = "Third Class")
+```
+
+```{r}
+ggplot(RatioSurvived) +
+ aes(x = reorder(Category, -Value), fill = Value, weight = Value) +
+ geom_bar() +
+ scale_fill_viridis_c(option = "inferno") +
+ labs(y = "Rate in %", title = "Survival Ratio by category") +
+ ggthemes::theme_stata()
+```
+
+```{r}
+sum(is.na(train.data$Age))
+sum(is.na(train.data$Cabin))
+```
+
+### Faire des catégories d'âge
+
+```{r}
+train.data$Class.Age <- cut(train.data$Age, breaks = c(0, 5, 17, 30, 50, 81),include.lowest = TRUE)
+```
+
+### Faire une colonne avec Mr, Miss, etc
+
 ### Regarder pour faire un arbre de décision (random forest ?)
