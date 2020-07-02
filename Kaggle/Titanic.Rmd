@@ -235,4 +235,41 @@ Countess <- as.data.frame(Countess)
 TitleSurvival <- bind_cols(Mr, Mrs, Miss, Master, Don, Rev, Dr, Mme, Ms, Major, Mlle, Col, Capt, Countess) %>% gather(key = "Category", value = "Value")
 ```
 
+```{r}
+ggplot(TitleSurvival) +
+ aes(x = reorder(Category, -Value), fill = Value, weight = Value) +
+ geom_bar() +
+ scale_fill_viridis_c(option = "inferno") +
+ labs(y = "Rate in %", title = "Survival Ratio by title") +
+ ggthemes::theme_stata()
+```
+
+```{r Survival by Class Age}
+Kids <- filter(train.data, Class.Age == "[0,5]" & Survived == TRUE) %>% nrow() / filter(train.data, Class.Age == "[0,5]") %>% nrow()
+Kids <- as.data.frame(Kids)
+
+Teenagers <- filter(train.data, Class.Age == "(5,17]" & Survived == TRUE) %>% nrow() / filter(train.data, Class.Age == "(5,17]") %>% nrow()
+Teenagers <- as.data.frame(Teenagers)
+
+YoungAdults <- filter(train.data, Class.Age == "(17,30]" & Survived == TRUE) %>% nrow() / filter(train.data, Class.Age == "(17,30]") %>% nrow()
+YoungAdults <- as.data.frame(YoungAdults)
+
+Adults <- filter(train.data, Class.Age == "(30,50]" & Survived == TRUE) %>% nrow() / filter(train.data, Class.Age == "(30,50]") %>% nrow()
+Adults <- as.data.frame(Adults)
+
+Seniors <- filter(train.data, Class.Age == "(50,81]" & Survived == TRUE) %>% nrow() / filter(train.data, Class.Age == "(50,81]") %>% nrow()
+Seniors <- as.data.frame(Seniors)
+
+ClassAgeSurvival <- bind_cols(Kids, Teenagers, YoungAdults, Adults, Seniors) %>% gather(key = "Category", value = "Value")
+```
+
+```{r}
+ggplot(ClassAgeSurvival) +
+ aes(x = reorder(Category, -Value), fill = Value, weight = Value) +
+ geom_bar() +
+ scale_fill_viridis_c(option = "inferno") +
+ labs(y = "Rate in %", title = "Survival Ratio by age class") +
+ ggthemes::theme_stata()
+```
+
 ### Regarder pour faire un arbre de décision (random forest ?)
