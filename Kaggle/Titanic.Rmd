@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 library(tidyverse)
 library(ggplot2)
 library(readr)
+library(randomForest)
 ```
 
 # Download and reshape data
@@ -273,3 +274,17 @@ ggplot(ClassAgeSurvival) +
 ```
 
 ### Regarder pour faire un arbre de décision (random forest ?)
+
+```{r}
+train.titanic <- train.data %>% sample_frac(0.8)
+test.titanic <- anti_join(train.data, train.titanic)
+
+(model <- randomForest(Survived~., data = train.titanic, ntree = 200, na.action = na.omit(train.titanic)))
+```
+
+## À FIXER DANS UN PREMIER TEMPS
+
+```{r}
+train.titanic$Age %>% mutate_at(funs(ifelse(is.na(.),median(., na.rm = TRUE),.)))
+```
+
