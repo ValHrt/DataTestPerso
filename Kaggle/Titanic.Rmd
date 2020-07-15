@@ -10,12 +10,12 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
 ```{r}
-#library(plyr)
 library(tidyverse)
 library(ggplot2)
 library(readr)
 library(randomForest)
 library(data.table)
+library(caret)
 ```
 
 # Download and reshape data
@@ -306,6 +306,7 @@ train.data2 <- train.data2[,-6] # retirer colonne Fare (conserve uniquement Clas
 
 train.data2$Embarked <- as.factor(train.data2$Embarked)
 train.data2$Title <- as.factor(train.data2$Title)
+train.data2$Survived <- as.factor(train.data2$Survived)
 ```
 
 ## Reprendre ici
@@ -314,6 +315,24 @@ train.data2$Title <- as.factor(train.data2$Title)
 train.titanic <- train.data2 %>% sample_frac(0.8)
 test.titanic <- anti_join(train.data2, train.titanic)
 
-(model <- randomForest(Survived~., data = train.titanic, ntree = 200, mtry = 2, na.action = na.omit))
+(model <- randomForest(Survived~., data = train.titanic, ntree = 1000, mtry = 4, na.action = na.omit))
+```
+
+```{r}
+model$importance
+```
+
+```{r}
+varImpPlot(model)
+```
+
+```{r}
+test.titanic$predicted <- predict(model, test.titanic)
+
+table(test.titanic$predicted, test.titanic$Survived)
+```
+
+```{r}
+conf <- confusionMatrix(data = test.titanic$predicted, reference = test.titanic$Survived)
 ```
 
