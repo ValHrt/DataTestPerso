@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
 ```{r}
+library(plyr)
 library(tidyverse)
 library(ggplot2)
 library(readr)
@@ -273,11 +274,28 @@ ggplot(ClassAgeSurvival) +
  ggthemes::theme_stata()
 ```
 
-### Regarder pour faire un arbre de décision (random forest ?)
+# Random Forest
+
+### Remplacer les NAs par les valeurs médianes (Age)
 
 ```{r}
-train.titanic <- train.data %>% sample_frac(0.8)
-test.titanic <- anti_join(train.data, train.titanic)
+train.data2 <- train.data
+
+train.data2 <- ddply(train.data2, 
+      .(Title), 
+      transform, 
+      Age=ifelse(is.na(Age), median(Age, na.rm=TRUE), Age)) # ré-organiser en fonction du titre
+
+train.data2$PassengerId <- as.numeric(train.data2$PassengerId)
+
+train.data2 <- train.data2[order(train.data2$PassengerId),]
+train.data2 <- as.data.frame(train.data2)
+train.data2 <- train.data2[,-1]
+```
+
+```{r}
+train.titanic <- train.data2 %>% sample_frac(0.8)
+test.titanic <- anti_join(train.data2, train.titanic)
 
 (model <- randomForest(Survived~., data = train.titanic, ntree = 200, na.action = na.omit(train.titanic)))
 ```
