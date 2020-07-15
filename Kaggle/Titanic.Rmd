@@ -289,24 +289,31 @@ train.data2$PassengerId <- as.numeric(train.data2$PassengerId)
 
 train.data2 <- train.data2[order(train.data2$PassengerId),]
 train.data2$PassengerId <- as.character(train.data2$PassengerId)
+```
 
+```{r Classe d'age et de prix}
 train.data2$Class.Age <- cut(train.data2$Age, breaks = c(0, 5, 17, 30, 50, 81),include.lowest = TRUE)
+train.data2$Class.Fare <- cut(train.data2$Fare, breaks = c(0, 8, 15, 33, 50, 100, 513), include.lowest = TRUE)
+```
 
+```{r Suppression colonnes inutiles}
 train.data2 <- train.data2[,-11] # retirer colonne cabine (pas d'intérêt, trop de valeurs manquantes)
 train.data2 <- train.data2[,-1] # retirer colonne ID passager
 train.data2 <- train.data2[,-3] # retirer colonne Name
+train.data2 <- train.data2[,-7] # retirer colonne Ticket (pas d'intérêt, toutes les valeurs sont différentes)
+train.data2 <- train.data2[,-4] # retirer colonne Age (conserve uniquement Class.Age)
+train.data2 <- train.data2[,-6] # retirer colonne Fare (conserve uniquement Class.Fare)
+
+train.data2$Embarked <- as.factor(train.data2$Embarked)
+train.data2$Title <- as.factor(train.data2$Title)
 ```
+
+## Reprendre ici
 
 ```{r}
 train.titanic <- train.data2 %>% sample_frac(0.8)
 test.titanic <- anti_join(train.data2, train.titanic)
 
 (model <- randomForest(Survived~., data = train.titanic, ntree = 200, mtry = 2, na.action = na.omit))
-```
-
-## À FIXER DANS UN PREMIER TEMPS
-
-```{r}
-train.titanic$Age %>% mutate_at(funs(ifelse(is.na(.),median(., na.rm = TRUE),.)))
 ```
 
