@@ -10,11 +10,12 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
 ```{r}
-library(plyr)
+#library(plyr)
 library(tidyverse)
 library(ggplot2)
 library(readr)
 library(randomForest)
+library(data.table)
 ```
 
 # Download and reshape data
@@ -278,26 +279,29 @@ ggplot(ClassAgeSurvival) +
 
 ### Remplacer les NAs par les valeurs médianes (Age)
 
-```{r}
-train.data2 <- train.data
+```{r Préparation modele}
+train.data2 <- data.table(train.data)
+setkey(train.data2, Title)
 
-train.data2 <- ddply(train.data2, 
-      .(Title), 
-      transform, 
-      Age=ifelse(is.na(Age), median(Age, na.rm=TRUE), Age)) # ré-organiser en fonction du titre
+train.data2[,Age := ifelse(is.na(Age), median(Age, na.rm=TRUE), Age), by=Title] # ré-organiser en fonction du titre
 
 train.data2$PassengerId <- as.numeric(train.data2$PassengerId)
 
 train.data2 <- train.data2[order(train.data2$PassengerId),]
-train.data2 <- as.data.frame(train.data2)
-train.data2 <- train.data2[,-1]
+train.data2$PassengerId <- as.character(train.data2$PassengerId)
+
+train.data2$Class.Age <- cut(train.data2$Age, breaks = c(0, 5, 17, 30, 50, 81),include.lowest = TRUE)
+
+train.data2 <- train.data2[,-11] # retirer colonne cabine (pas d'intérêt, trop de valeurs manquantes)
+train.data2 <- train.data2[,-1] # retirer colonne ID passager
+train.data2 <- train.data2[,-3] # retirer colonne Name
 ```
 
 ```{r}
 train.titanic <- train.data2 %>% sample_frac(0.8)
 test.titanic <- anti_join(train.data2, train.titanic)
 
-(model <- randomForest(Survived~., data = train.titanic, ntree = 200, na.action = na.omit(train.titanic)))
+(model <- randomForest(Survived~., data = train.titanic, ntree = 200, mtry = 2, na.action = na.omit))
 ```
 
 ## À FIXER DANS UN PREMIER TEMPS
