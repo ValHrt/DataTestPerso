@@ -403,3 +403,33 @@ test.data$Title <-
          ))
 ```
 
+```{r}
+test.data2 <- data.table(test.data)
+setkey(test.data2, Title)
+
+test.data2[,Age := ifelse(is.na(Age), median(Age, na.rm=TRUE), Age), by=Title]
+
+test.data2 <- test.data2[order(test.data2$PassengerId),]
+```
+
+```{r}
+test.data2$Class.Age <- cut(test.data2$Age, breaks = c(0, 5, 17, 30, 50, 81),include.lowest = TRUE)
+test.data2$Class.Fare <- cut(test.data2$Fare, breaks = c(0, 8, 15, 33, 50, 100, 513), include.lowest = TRUE)
+```
+
+```{r}
+test.data2 <- test.data2[,-10] # retirer colonne cabine (pas d'intérêt, trop de valeurs manquantes)
+test.data2 <- test.data2[,-3] # retirer colonne Name
+test.data2 <- test.data2[,-7] # retirer colonne Ticket (pas d'intérêt, toutes les valeurs sont différentes)
+test.data2 <- test.data2[,-4] # retirer colonne Age (conserve uniquement Class.Age)
+test.data2 <- test.data2[,-6] # retirer colonne Fare (conserve uniquement Class.Fare)
+
+test.data2$Embarked <- as.factor(test.data2$Embarked)
+test.data2$Title <- as.factor(test.data2$Title)
+test.data2$Survived <- as.factor(test.data2$Survived)
+```
+
+```{r Application modele}
+test.data2$predicted <- predict(model, test.titanic)
+```
+
