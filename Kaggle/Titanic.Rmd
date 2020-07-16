@@ -288,7 +288,7 @@ train.data2[,Age := ifelse(is.na(Age), median(Age, na.rm=TRUE), Age), by=Title] 
 train.data2$PassengerId <- as.numeric(train.data2$PassengerId)
 
 train.data2 <- train.data2[order(train.data2$PassengerId),]
-train.data2$PassengerId <- as.character(train.data2$PassengerId)
+#train.data2$PassengerId <- as.character(train.data2$PassengerId)
 ```
 
 ```{r Classe d'age et de prix}
@@ -298,11 +298,11 @@ train.data2$Class.Fare <- cut(train.data2$Fare, breaks = c(0, 8, 15, 33, 50, 100
 
 ```{r Suppression colonnes inutiles}
 train.data2 <- train.data2[,-11] # retirer colonne cabine (pas d'intérêt, trop de valeurs manquantes)
-train.data2 <- train.data2[,-1] # retirer colonne ID passager
-train.data2 <- train.data2[,-3] # retirer colonne Name
-train.data2 <- train.data2[,-7] # retirer colonne Ticket (pas d'intérêt, toutes les valeurs sont différentes)
-train.data2 <- train.data2[,-4] # retirer colonne Age (conserve uniquement Class.Age)
-train.data2 <- train.data2[,-6] # retirer colonne Fare (conserve uniquement Class.Fare)
+#train.data2 <- train.data2[,-1] # retirer colonne ID passager
+train.data2 <- train.data2[,-4] # retirer colonne Name
+train.data2 <- train.data2[,-8] # retirer colonne Ticket (pas d'intérêt, toutes les valeurs sont différentes)
+train.data2 <- train.data2[,-5] # retirer colonne Age (conserve uniquement Class.Age)
+train.data2 <- train.data2[,-7] # retirer colonne Fare (conserve uniquement Class.Fare)
 
 train.data2$Embarked <- as.factor(train.data2$Embarked)
 train.data2$Title <- as.factor(train.data2$Title)
@@ -315,7 +315,8 @@ train.data2$Survived <- as.factor(train.data2$Survived)
 train.titanic <- train.data2 %>% sample_frac(0.8)
 test.titanic <- anti_join(train.data2, train.titanic)
 
-(model <- randomForest(Survived~., data = train.titanic, ntree = 1000, mtry = 4, na.action = na.omit))
+set.seed(4321)
+(model <- randomForest(Survived~., data = train.titanic, ntree = 1000, na.action = na.roughfix))
 ```
 
 ```{r}
@@ -334,5 +335,71 @@ table(test.titanic$predicted, test.titanic$Survived)
 
 ```{r}
 conf <- confusionMatrix(data = test.titanic$predicted, reference = test.titanic$Survived)
+```
+
+# Appliquer le modèle au jeu de données test
+
+```{r}
+test.data$Pclass <- as.factor(test.data$Pclass)
+test.data$Sex <- as.factor(test.data$Sex)
+```
+
+```{r}
+test.data$Title <-
+  ifelse(grepl("\\bMr\\b", test.data$Name, ignore.case = T),
+         "Mr.",
+         ifelse(
+           grepl("\\bMrs\\b", test.data$Name, ignore.case = T),
+           "Mrs.",
+           ifelse(
+             grepl("Miss.", test.data$Name, ignore.case = T),
+             "Miss.",
+             ifelse(
+               grepl("Master.", test.data$Name, ignore.case = T),
+               "Master.",
+               ifelse(
+                 grepl("Don.", test.data$Name, ignore.case = T),
+                 "Don.",
+                 ifelse(
+                   grepl("Rev.", test.data$Name, ignore.case = T),
+                   "Rev.",
+                   ifelse(
+                     grepl("Dr.", test.data$Name, ignore.case = T),
+                     "Dr.",
+                     ifelse(
+                       grepl("Mme.", test.data$Name, ignore.case = T),
+                       "Mme.",
+                       ifelse(
+                         grepl("Ms.", test.data$Name, ignore.case = T),
+                         "Ms.",
+                         ifelse(
+                           grepl("Major.", test.data$Name, ignore.case = T),
+                           "Major",
+                           ifelse(
+                             grepl("Mlle.", test.data$Name, ignore.case = T),
+                             "Mlle",
+                             ifelse(
+                               grepl("Col.", test.data$Name, ignore.case = T),
+                               "Col.",
+                               ifelse(
+                                 grepl("Capt.", test.data$Name, ignore.case = T),
+                                 "Capt.",
+                                 ifelse(
+                                   grepl("Countess.", test.data$Name, ignore.case = T),
+                                   "Countess.",
+                                   "Unknown"
+                                 )
+                               )
+                             )
+                           )
+                         )
+                       )
+                     )
+                   )
+                 )
+               )
+             )
+           )
+         ))
 ```
 
