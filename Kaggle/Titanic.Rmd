@@ -434,6 +434,8 @@ test.data2$Survived <- as.factor(test.data2$Survived)
 ### Erreur sur ce code
 
 ```{r Application modele}
-test.data2$Survived <- predict(model, newdata = test.data2)
+test.data2 <- test.data2[,-10] # retirer colonne Survived (pas sûr)
+
+predict(model, newdata = test.data2) # voir sur Kaggle
 ```
 
