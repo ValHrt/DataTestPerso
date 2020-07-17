@@ -309,7 +309,13 @@ train.data2$Title <- as.factor(train.data2$Title)
 train.data2$Survived <- as.factor(train.data2$Survived)
 ```
 
-## Reprendre ici
+### Deux valeurs manquantes pour train.data2 variable "Embarked"
+
+```{r}
+train.data2$Embarked <- train.data2[train.data2$Embarked == "","Embarked"] <- "S" ## Remplacement par la valeur la plus commune
+```
+
+## Plus pertinent
 
 ```{r}
 set.seed(4321)
@@ -327,6 +333,8 @@ model$importance
 ```{r}
 varImpPlot(model)
 ```
+
+### Plus pertinent
 
 ```{r}
 test.titanic$predicted <- predict(model, test.titanic)
@@ -428,14 +436,35 @@ test.data2 <- test.data2[,-6] # retirer colonne Fare (conserve uniquement Class.
 
 test.data2$Embarked <- as.factor(test.data2$Embarked)
 test.data2$Title <- as.factor(test.data2$Title)
-test.data2$Survived <- as.factor(test.data2$Survived)
+test.data2$Survived <- NA
 ```
 
-### Erreur sur ce code
+## Nouvelle manip
 
-```{r Application modele}
-test.data2 <- test.data2[,-10] # retirer colonne Survived (pas sûr)
+```{r}
+train.titanic <- train.data2
+test.titanic <- test.data2
 
-predict(model, newdata = test.data2) # voir sur Kaggle
+train.titanic$dftest <- TRUE
+test.titanic$dftest <- FALSE
+fulldf.titanic <- rbind(train.titanic, test.titanic)
+```
+
+```{r}
+train.titanic <- fulldf.titanic[fulldf.titanic$dftest == TRUE,]
+test.titanic <- fulldf.titanic[fulldf.titanic$dftest == FALSE,]
+```
+
+```{r}
+survived.equation <- "Survived ~ Pclass + Sex + Class.Age + SibSp + Parch + Class.Fare + Embarked + Title"
+survived.formula <- as.formula(survived.equation)
+
+set.seed(4321)
+model <- randomForest(formula=survived.formula, data = train.titanic, ntree = 1000, na.action = na.roughfix)
+```
+
+
+```{r}
+test.titanic$Survived <- predict(model, newdata = test.titanic)
 ```
 
