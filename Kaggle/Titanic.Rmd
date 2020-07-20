@@ -312,38 +312,15 @@ train.data2$Survived <- as.factor(train.data2$Survived)
 ### Deux valeurs manquantes pour train.data2 variable "Embarked"
 
 ```{r}
-train.data2$Embarked <- train.data2[train.data2$Embarked == "","Embarked"] <- "S" ## Remplacement par la valeur la plus commune
-```
-
-## Plus pertinent
-
-```{r}
-set.seed(4321)
-train.titanic <- train.data2 %>% sample_frac(0.8)
-test.titanic <- anti_join(train.data2, train.titanic)
-
-set.seed(4321)
-(model <- randomForest(Survived~., data = train.titanic, ntree = 1000, na.action = na.roughfix))
+sum(is.na(train.data2$Embarked))
 ```
 
 ```{r}
-model$importance
+table(train.data2$Embarked)
 ```
 
 ```{r}
-varImpPlot(model)
-```
-
-### Plus pertinent
-
-```{r}
-test.titanic$predicted <- predict(model, test.titanic)
-
-table(test.titanic$predicted, test.titanic$Survived)
-```
-
-```{r}
-conf <- confusionMatrix(data = test.titanic$predicted, reference = test.titanic$Survived)
+train.data2$Embarked[is.na(train.data2$Embarked)] = "S" ## Remplacement par la valeur la plus commune
 ```
 
 # Appliquer le modèle au jeu de données test
@@ -463,8 +440,36 @@ set.seed(4321)
 model <- randomForest(formula=survived.formula, data = train.titanic, ntree = 1000, na.action = na.roughfix)
 ```
 
+```{r}
+model$importance
+```
+
+```{r}
+varImpPlot(model)
+```
 
 ```{r}
 test.titanic$Survived <- predict(model, newdata = test.titanic)
+```
+
+```{r}
+table(test.titanic$Survived)
+155/(263+155)
+```
+
+```{r}
+table(train.titanic$Survived)
+342/(342+549)
+```
+
+```{r}
+PassengerId <- test.titanic$PassengerId
+FinalDf <- as.data.frame(PassengerId)
+
+FinalDf$Survived <- test.titanic$Survived
+
+FinalDf$Survived <- recode(FinalDf$Survived, "FALSE" = "0", "TRUE" = "1")
+
+write.csv(FinalDf, "titanic_kaggle_submission.csv", row.names = FALSE)
 ```
 
