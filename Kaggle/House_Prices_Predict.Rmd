@@ -61,10 +61,12 @@ Nous regardons les dix premières lignes de notre jeu de données, nous pouvons 
 na_count <-sapply(full.df, function(y) sum(length(which(is.na(y)))))
 
 na_count <- data.frame(na_count)
-na_count
+
+na_count <- rownames_to_column(na_count)
+na_count <- filter(na_count, na_count > 0)
 ```
 
-Nous pouvons voir que les variables qui comptent le plus de valeurs manquantes sont Alley, PoolQc, MiscFeature, Fence, FirePlaceQu. Il y a d'autres variables qui contiennent des valeurs nulles mais dans une moindre mesure. Il sera donc plus simple de les prédire. Enfin, la variable SalePrice contient 1459 valeurs manquantes soit le nombre de lignes du jeu de données test.
+Nous pouvons voir que les variables qui comptent le plus de valeurs manquantes sont Alley, PoolQc, MiscFeature, Fence, FirePlaceQu. Il y a 29 variables qui contiennent des valeurs nulles mais dans une moindre mesure. Il sera donc plus simple de les prédire. Enfin, la variable SalePrice contient 1459 valeurs manquantes soit le nombre de lignes du jeu de données test.
 
 ```{r}
 gg_miss_var(full.df)
