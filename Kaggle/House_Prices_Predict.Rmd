@@ -1,0 +1,51 @@
+---
+title: "House Prices Prediction"
+author: "Valentin Henriot"
+date: "7/22/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2) # data visualization
+library(readr) # download the data
+library(caret) # to perform RF model
+```
+
+# Download the data
+
+```{r}
+train.df <- read_csv("~/Desktop/ProjectR/DataBase/trainhouseprices.csv")
+test.df <- read_csv("~/Desktop/ProjectR/DataBase/testhouseprices.csv")
+
+train.df$TrainData <- TRUE 
+test.df$TrainData <- FALSE
+```
+
+```{r}
+str(train.df)
+```
+
+We can see that train.df contains 82 variables.
+
+```{r}
+str(test.df)
+```
+
+test.df contains only 81 variables, one less than train.df, we see that it is the variable SalePrice that is missing.
+
+```{r}
+test.df$SalePrice <- NA
+```
+
+We had the variable SalePrice with the value NA for the test dataset.
+
+```{r}
+full.df <- rbind(train.df, test.df)
+```
+
+We merge the two datasets to perform analysis on the full data.
