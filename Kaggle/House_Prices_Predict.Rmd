@@ -14,6 +14,7 @@ library(tidyverse)
 library(ggplot2) # data visualization
 library(readr) # download the data
 library(caret) # to perform RF model
+library(naniar) # to visualize missing data
 ```
 
 # Download the data
@@ -27,13 +28,13 @@ test.df$TrainData <- FALSE
 ```
 
 ```{r}
-str(train.df)
+#str(train.df)
 ```
 
 We can see that train.df contains 82 variables.
 
 ```{r}
-str(test.df)
+#str(test.df)
 ```
 
 test.df contains only 81 variables, one less than train.df, we see that it is the variable SalePrice that is missing.
@@ -42,10 +43,32 @@ test.df contains only 81 variables, one less than train.df, we see that it is th
 test.df$SalePrice <- NA
 ```
 
-We had the variable SalePrice with the value NA for the test dataset.
+We add the variable SalePrice with the value NA for the test dataset.
 
 ```{r}
 full.df <- rbind(train.df, test.df)
 ```
 
 We merge the two datasets to perform analysis on the full data.
+
+```{r}
+head(full.df, 10)
+```
+
+Nous regardons les dix premières lignes de notre jeu de données, nous pouvons constater que certaines variables comportent des valeurs manquantes. Nous allons donc étudier quelles sont les valeurs manquantes puis essayer de définir une méthode pour les prédire.
+
+```{r}
+na_count <-sapply(full.df, function(y) sum(length(which(is.na(y)))))
+
+na_count <- data.frame(na_count)
+na_count
+```
+
+Nous pouvons voir que les variables qui comptent le plus de valeurs manquantes sont Alley, PoolQc, MiscFeature, Fence, FirePlaceQu. Il y a d'autres variables qui contiennent des valeurs nulles mais dans une moindre mesure. Il sera donc plus simple de les prédire. Enfin, la variable SalePrice contient 1459 valeurs manquantes soit le nombre de lignes du jeu de données test.
+
+```{r}
+gg_miss_var(full.df)
+```
+
+Une autre manière de visualiser les valeurs manquantes de façon hiérarchique. Sur ce graphique, nous distinguons clairement 6 variables pour lesquelles nous avons plus de 1000 valeurs nulles.
+
