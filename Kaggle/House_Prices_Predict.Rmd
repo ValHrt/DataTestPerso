@@ -64,6 +64,7 @@ na_count <- data.frame(na_count)
 
 na_count <- rownames_to_column(na_count)
 na_count <- filter(na_count, na_count > 0)
+na_count
 ```
 
 Nous pouvons voir que les variables qui comptent le plus de valeurs manquantes sont Alley, PoolQc, MiscFeature, Fence, FirePlaceQu. Il y a 29 variables qui contiennent des valeurs nulles mais dans une moindre mesure. Il sera donc plus simple de les prédire. Enfin, la variable SalePrice contient 1459 valeurs manquantes soit le nombre de lignes du jeu de données test.
@@ -74,3 +75,9 @@ gg_miss_var(full.df)
 
 Une autre manière de visualiser les valeurs manquantes de façon hiérarchique. Sur ce graphique, nous distinguons clairement 6 variables pour lesquelles nous avons plus de 1000 valeurs nulles.
 
+Analyse des variables qui contiennent le plus de NA:
+
+PoolQC, la valeur NA indique une absence de piscine, il n'y a donc aucune valeur à modifier.
+MiscFeature, là encore, la valeur NA indique l'absence de caractéristiques supplémentaires.
+Alley, la valeur NA indique l'absence d'allée.
+Fence, la valeur NA indique l'absence de clôtures.
