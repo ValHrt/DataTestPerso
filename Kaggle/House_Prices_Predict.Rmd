@@ -104,6 +104,13 @@ summary(full.df$LotFrontage)
 Cette première analyse nous permet de constater que pour la variable LotFrontage, la valeur minimum est 21. Nous ne pouvons donc pas conclure que les valeurs NA représentent la valeur 0. 
 
 ```{r}
-table(is.na(full.df$LotFrontage), full.df$LandContour)
+table(is.na(full.df$LotFrontage), full.df$MSZoning)
 ```
 
+Dans un premier temps, nous essayons de voir s'il existe un lien entre la variable MsZoning et la variable LotFrontage. Nous décidons de faire cette analyse car il pourrait y avoir un lien par exemple entre le fait d'être en zone agricole et ainsi ne pas avoir de surface du lot bordant la rue. 
+
+Nous constatons que les valeurs manquantes pour LotFrontage semblent être distribuées de façon identique aux valeurs non-nulles de la variable. Il n'y a donc à priori aucun lien entre ces deux variables.
+
+En étudiant les autres variables du jeu de données, nous nous apercevons qu'aucune autre ne semble pouvoir expliquer les absences de valeurs pour la variable LotFrontage. Nous allons donc devoir trouver une méthode pour prédire les valeurs de cette dernière.
+
+### Méthode à trouver pour valeurs NA LotFrontage
