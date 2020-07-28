@@ -102,9 +102,34 @@ full.df$Fence[is.na(full.df$Fence)] = "No"
 full.df$FireplaceQu[is.na(full.df$FireplaceQu)] = "No"
 ```
 
-### Vérification de la pertinence des nouvelles valeurs (Pool ?)
-
 Les valeurs indiquées comme NA pour les précédentes variables ont donc été remplacées par la valeur "No", cela permettra de passer ces variables en facteur au moment voulu.
+
+### Vérification pour la variable PoolQC
+
+```{r}
+full.df[full.df$PoolArea>0 & full.df$PoolQC=="No", c("Id", 'PoolArea', 'PoolQC', 'OverallQual')]
+```
+
+Nous constatons qu'il y a 3 valeurs "No" pour la variable PoolQC alors que la variable PoolArea indique une taille de piscine (donc la présence d'une piscine sur la propriété). Il s'agit donc d'une erreur de saisie ou d'une omission pour la variable PoolQC sur les lignes.
+Pour remplacer les valeurs manquantes de PoolQC, nous nous baserons sur la qualité globale de la maison (en divisant par 2).
+
+```{r}
+full.df$PoolQC[2421] <- "Fa"
+full.df$PoolQC[2504] <- "TA"
+full.df$PoolQC[2600] <- "Fa"
+```
+
+Les valeurs ont été remplacées en prenant en compte la qualité globale de l'habitation.
+
+### Vérification pour la variable FirePlaceQu
+
+```{r}
+full.df[full.df$Fireplaces>0 & full.df$FireplaceQu=="No", c("Id", 'Fireplaces', 'FireplaceQu')]
+```
+
+Il n'y a aucune erreur sur la variable FirePlaceQu, car lorsque la valeur indique "No", il y a effectivement aucune cheminée au sein de l'habitation.
+
+### Valeurs manquantes Lot Frontage
 
 ```{r}
 summary(full.df$LotFrontage)
@@ -122,8 +147,6 @@ Nous constatons que les valeurs manquantes pour LotFrontage semblent être distr
 
 En étudiant les autres variables du jeu de données, nous nous apercevons qu'aucune autre ne semble pouvoir expliquer les absences de valeurs pour la variable LotFrontage. Nous allons donc devoir trouver une méthode pour prédire les valeurs de cette dernière.
 
-### Valeurs manquantes Lot Frontage
-
 ```{r}
 ggplot(full.df[!is.na(full.df$LotFrontage),], aes(x=as.factor(Neighborhood), y=LotFrontage)) +
         geom_bar(stat='summary', fun.y = "median", fill='red') +
@@ -136,6 +159,8 @@ Nous voyons que les valeurs pour LotFrontage divergent en fonction du lieu. Nous
 full.df <- data.table(full.df)
 setkey(full.df, Neighborhood)
 full.df[,LotFrontage := ifelse(is.na(LotFrontage), median(LotFrontage, na.rm=TRUE), LotFrontage), by=Neighborhood]
+
+full.df <- full.df[order(full.df$Id),]
 ```
 
 
