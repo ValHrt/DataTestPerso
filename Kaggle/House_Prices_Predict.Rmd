@@ -15,6 +15,7 @@ library(ggplot2) # data visualization
 library(readr) # download the data
 library(caret) # to perform RF model
 library(naniar) # to visualize missing data
+library(data.table) # to ?????????
 ```
 
 # Download the data
@@ -57,6 +58,10 @@ head(full.df, 10)
 
 Nous regardons les dix premières lignes de notre jeu de données, nous pouvons constater que certaines variables comportent des valeurs manquantes. Nous allons donc étudier quelles sont les valeurs manquantes puis essayer de définir une méthode pour les prédire.
 
+# Gérer les valeurs manquantes
+
+## NA sur la globalité du jeu de données
+
 ```{r}
 na_count <-sapply(full.df, function(y) sum(length(which(is.na(y)))))
 
@@ -87,6 +92,8 @@ Analyse des variables qui contiennent le plus de NA:
 Pour éviter de fausser l'analyse de données, nous allons remplacer les valeurs NA des cinq premières variables par "No".
 Concernant la variable LotFrontage, nous allons devoir déterminer si NA indique une distance de 0 ou s'il s'agit de valeurs non renseignées.
 
+### NA indiquant "non"
+
 ```{r}
 full.df$PoolQC[is.na(full.df$PoolQC)] = "No"
 full.df$MiscFeature[is.na(full.df$MiscFeature)] = "No"
@@ -94,6 +101,8 @@ full.df$Alley[is.na(full.df$Alley)] = "No"
 full.df$Fence[is.na(full.df$Fence)] = "No"
 full.df$FireplaceQu[is.na(full.df$FireplaceQu)] = "No"
 ```
+
+### Vérification de la pertinence des nouvelles valeurs (Pool ?)
 
 Les valeurs indiquées comme NA pour les précédentes variables ont donc été remplacées par la valeur "No", cela permettra de passer ces variables en facteur au moment voulu.
 
@@ -113,4 +122,21 @@ Nous constatons que les valeurs manquantes pour LotFrontage semblent être distr
 
 En étudiant les autres variables du jeu de données, nous nous apercevons qu'aucune autre ne semble pouvoir expliquer les absences de valeurs pour la variable LotFrontage. Nous allons donc devoir trouver une méthode pour prédire les valeurs de cette dernière.
 
-### Méthode à trouver pour valeurs NA LotFrontage
+### Valeurs manquantes Lot Frontage
+
+```{r}
+ggplot(full.df[!is.na(full.df$LotFrontage),], aes(x=as.factor(Neighborhood), y=LotFrontage)) +
+        geom_bar(stat='summary', fun.y = "median", fill='red') +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Nous voyons que les valeurs pour LotFrontage divergent en fonction du lieu. Nous allons donc affecter les valeurs médianes aux valeurs manquantes pour cette variable.
+
+```{r}
+full.df <- data.table(full.df)
+setkey(full.df, Neighborhood)
+full.df[,LotFrontage := ifelse(is.na(LotFrontage), median(LotFrontage, na.rm=TRUE), LotFrontage), by=Neighborhood]
+```
+
+
+
